@@ -1,5 +1,33 @@
 const hamburger = document.getElementById('hamburger');
 const navLinks = document.querySelector('.nav-links');
+const themeToggle = document.getElementById('theme-toggle');
+const bodyEl = document.body;
+
+function applyTheme(theme) {
+    const isLight = theme === 'light';
+    bodyEl.classList.toggle('light-theme', isLight);
+    if (themeToggle) {
+        themeToggle.textContent = isLight ? '☀️' : '🌙';
+        themeToggle.title = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+    }
+    localStorage.setItem('theme', theme);
+}
+
+function initTheme() {
+    const storedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = storedTheme ? storedTheme : (prefersDark ? 'dark' : 'light');
+    applyTheme(theme);
+}
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const current = bodyEl.classList.contains('light-theme') ? 'light' : 'dark';
+        applyTheme(current === 'light' ? 'dark' : 'light');
+    });
+}
+
+initTheme();
 
 // Set active link based on current page
 function setActiveLink() {
@@ -77,18 +105,29 @@ function renderFileList() {
         fileUploadName.textContent = '';
         selectedFiles.innerHTML = '';
         const togglePreviewBtn = document.getElementById('toggle-preview-btn');
-        togglePreviewBtn.style.display = 'none';
+        if (togglePreviewBtn) togglePreviewBtn.style.display = 'none';
         return;
     }
     
     fileUploadName.textContent = `${accumulatedFiles.length} file(s) total`;
     const togglePreviewBtn = document.getElementById('toggle-preview-btn');
-    togglePreviewBtn.style.display = 'inline-block';
+    if (togglePreviewBtn) togglePreviewBtn.style.display = 'inline-block';
     
     selectedFiles.innerHTML = `<div style="color: var(--accent); font-weight:700; margin-bottom:16px; font-size:1.1rem;">📁 Uploaded Files (${accumulatedFiles.length}):</div>` + accumulatedFiles
         .map((file, index) => {
-            const isPreviewable = file.type.startsWith('application/pdf') || file.type.startsWith('image/');
-            const fileIcon = file.type.startsWith('image/') ? '🖼️' : file.type === 'application/pdf' ? '📄' : '📎';
+            const isPreviewable = file.type.startsWith('application/pdf') || file.type.startsWith('image/') || file.type.startsWith('text/');
+            let fileIcon = '📎'; // Default icon
+            
+            // Set appropriate icon based on file type
+            if (file.type.startsWith('image/')) fileIcon = '🖼️';
+            else if (file.type === 'application/pdf') fileIcon = '📄';
+            else if (file.type.startsWith('text/')) fileIcon = '📝';
+            else if (file.type.startsWith('video/')) fileIcon = '🎥';
+            else if (file.type.startsWith('audio/')) fileIcon = '🎵';
+            else if (file.type.includes('word') || file.type.includes('document')) fileIcon = '📄';
+            else if (file.type.includes('excel') || file.type.includes('spreadsheet')) fileIcon = '📊';
+            else if (file.type.includes('powerpoint') || file.type.includes('presentation')) fileIcon = '📽️';
+            else if (file.type.includes('zip') || file.type.includes('rar') || file.type.includes('archive')) fileIcon = '🗜️';
             
             return `<div style="display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; margin-bottom:12px; padding:14px; background:var(--card-bg); border-radius:10px; border:1px solid var(--accent-dim); transition:all 0.2s;">
                 <div style="display:flex; align-items:center; gap:10px; min-width:0;">
@@ -122,17 +161,18 @@ function attachFileListeners() {
             const file = accumulatedFiles[index];
             const blobUrl = URL.createObjectURL(file);
             
-            if (file.type.startsWith('image/') || file.type.startsWith('application/pdf')) {
-                // Open in new tab
+            if (file.type.startsWith('image/') || file.type.startsWith('application/pdf') || file.type.startsWith('text/')) {
+                // Open in new tab for previewable files
                 window.open(blobUrl, '_blank');
             } else {
-                // Download other types
+                // Download other file types
                 const link = document.createElement('a');
                 link.href = blobUrl;
                 link.download = file.name;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                URL.revokeObjectURL(blobUrl);
             }
         });
     });
@@ -144,18 +184,35 @@ function attachFileListeners() {
             
             if (file.type.startsWith('image/')) {
                 const blobUrl = URL.createObjectURL(file);
-                imagePreview.innerHTML = `<img src="${blobUrl}" style="max-width:95%; max-height:95%; width:auto; height:auto;" />`;
-                imagePreview.style.display = 'flex';
-                previewIframe.style.display = 'none';
-                cvPreviewContainer.style.display = 'flex';
-                togglePreviewBtn.textContent = 'Hide Document Preview';
+                if (imagePreview) {
+                    imagePreview.innerHTML = `<img src="${blobUrl}" style="max-width:95%; max-height:95%; width:auto; height:auto;" />`;
+                    imagePreview.style.display = 'flex';
+                }
+                if (previewIframe) previewIframe.style.display = 'none';
+                if (cvPreviewContainer) cvPreviewContainer.style.display = 'flex';
+                if (togglePreviewBtn) togglePreviewBtn.textContent = 'Hide Document Preview';
             } else if (file.type.startsWith('application/pdf')) {
                 const blobUrl = URL.createObjectURL(file);
-                previewIframe.src = blobUrl;
-                previewIframe.style.display = 'block';
-                imagePreview.style.display = 'none';
-                cvPreviewContainer.style.display = 'flex';
-                togglePreviewBtn.textContent = 'Hide Document Preview';
+                if (previewIframe) {
+                    previewIframe.src = blobUrl;
+                    previewIframe.style.display = 'block';
+                }
+                if (imagePreview) imagePreview.style.display = 'none';
+                if (cvPreviewContainer) cvPreviewContainer.style.display = 'flex';
+                if (togglePreviewBtn) togglePreviewBtn.textContent = 'Hide Document Preview';
+            } else if (file.type.startsWith('text/')) {
+                // Handle text files
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (imagePreview) {
+                        imagePreview.innerHTML = `<pre style="max-width:95%; max-height:95%; overflow:auto; background:var(--card-bg); padding:20px; border-radius:8px; color:var(--white); font-family:monospace; white-space:pre-wrap;">${e.target.result}</pre>`;
+                        imagePreview.style.display = 'flex';
+                    }
+                    if (previewIframe) previewIframe.style.display = 'none';
+                    if (cvPreviewContainer) cvPreviewContainer.style.display = 'flex';
+                    if (togglePreviewBtn) togglePreviewBtn.textContent = 'Hide Document Preview';
+                };
+                reader.readAsText(file);
             }
         });
     });
@@ -218,4 +275,79 @@ if (dynamicTitle) {
         dynamicTitle.setAttribute('data-text', newTitle);
     }, 3000); // Change every 3 seconds
 }
+
+// Certificate view toggle functionality
+function toggleCertificateView(certificateType) {
+    const certificateContainer = document.getElementById(`${certificateType}-certificate`);
+    const toggleBtn = document.getElementById(`${certificateType}-toggle-btn`);
+    
+    if (certificateContainer && toggleBtn) {
+        const isVisible = certificateContainer.style.display !== 'none';
+        
+        if (isVisible) {
+            // Hide certificate
+            certificateContainer.style.display = 'none';
+            toggleBtn.innerHTML = '<i class="fas fa-eye" style="margin-right: 5px;"></i>View';
+        } else {
+            // Show certificate
+            certificateContainer.style.display = 'block';
+            toggleBtn.innerHTML = '<i class="fas fa-eye-slash" style="margin-right: 5px;"></i>Hide';
+        }
+    }
+}
+
+// Document download functions
+function downloadCV() {
+    const link = document.createElement('a');
+    link.href = '../media/KWIZERA David CV.pdf';
+    link.download = 'KWIZERA David CV.pdf';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function downloadDocument(filename) {
+    const link = document.createElement('a');
+    // Handle AIMS certificate specifically
+    if (filename === 'AIMS-Certificate.pdf') {
+        // You can add the actual AIMS certificate file to the media folder
+        // For now, using a placeholder - replace with actual filename when available
+        link.href = `../media/${filename}`;
+        link.download = filename;
+    } else {
+        link.href = `../media/${filename}`;
+        link.download = filename;
+    }
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Add click feedback for document cards
+document.addEventListener('DOMContentLoaded', function() {
+    const cvCard = document.querySelector('.cv-download-card');
+    const documentItems = document.querySelectorAll('.document-item');
+    
+    if (cvCard) {
+        cvCard.addEventListener('click', function() {
+            // Add visual feedback
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(-2px)';
+            }, 150);
+        });
+    }
+    
+    documentItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Add visual feedback
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(-2px)';
+            }, 150);
+        });
+    });
+});
 
