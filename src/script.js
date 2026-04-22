@@ -49,3 +49,37 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// ── Download CV ──
+function downloadCV() {
+    // Create a link element to trigger download
+    const link = document.createElement('a');
+    link.href = '../media/KWIZERA David CV.pdf'; // Path to CV file
+    link.download = 'KWIZERA-David-CV.pdf'; // File name for download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Log for tracking (optional)
+    console.log('CV download initiated:', new Date().toLocaleString());
+}
+
+// ── Toggle Certificate/Document View ──
+function toggleCertificateView(documentId) {
+    const certificateElement = document.getElementById(documentId + '-certificate');
+    const toggleButton = document.getElementById(documentId + '-toggle-btn');
+    
+    if (certificateElement && toggleButton) {
+        const isCurrentlyVisible = certificateElement.style.display !== 'none';
+        
+        if (isCurrentlyVisible) {
+            // Hide the certificate
+            certificateElement.style.display = 'none';
+            toggleButton.innerHTML = '<i class="fas fa-eye" style="margin-right: 5px;"></i>View';
+        } else {
+            // Show the certificate
+            certificateElement.style.display = 'block';
+            toggleButton.innerHTML = '<i class="fas fa-eye-slash" style="margin-right: 5px;"></i>Hide';
+        }
+    }
+}
