@@ -1,12 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
     // 1. Active Navigation Link Highlighter
     const currentURL = window.location.href;
+    const currentPathname = window.location.pathname;
+    const currentFilename = currentPathname.substring(currentPathname.lastIndexOf('/') + 1);
+
     const navLinksList = document.querySelectorAll('.nav-links a');
     
     navLinksList.forEach(link => {
-        const linkHref = link.getAttribute('href');
-        // Handle cases like '../index.html' or 'about.html'
-        if (currentURL.includes(linkHref.replace('../', ''))) {
+        // Resolve the link's href to a full URL to correctly handle relative paths
+        const linkUrl = new URL(link.href);
+        const linkFilename = linkUrl.pathname.substring(linkUrl.pathname.lastIndexOf('/') + 1);
+
+        if (currentFilename === linkFilename) {
             link.classList.add('active');
         } else {
             link.classList.remove('active');

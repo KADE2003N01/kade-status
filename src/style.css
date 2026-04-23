@@ -373,6 +373,13 @@ section h2, section h3 {
     margin-bottom: 1rem; /* Consistent heading spacing */
 }
 
+/* Spacing Utilities */
+.mb-lg {
+    font-size: clamp(1.2rem, 0vw, 1.5rem);
+    margin-top: 50px;
+    margin-bottom:50px; /* Consistent with doc-info-header spacing */
+}
+
 section strong {
     color: var(--accent) !important;
     font-weight: 700;
