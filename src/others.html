@@ -14,9 +14,6 @@
     <nav>
         <div class="nav-logo"><img src="../media/bg-removed.png" alt="Kade" class="nav-avatar"></div>
         <ul class="nav-links">
-            <li class="nav-profile-mobile">
-                <img src="../media/bg-removed.png" alt="Kade" class="nav-avatar-mobile">
-            </li>
             <li><a href="../index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="background.html">Background</a></li>
@@ -47,14 +44,13 @@
     <!-- OTHERS CONTENT -->
     <section class="doc-welcome-section">
         <!-- WELCOME SECTION -->
-        <div style="margin-bottom: 40px;">
+        <div class="doc-hero-container">
             <h1 class="doc-hero-title">
-                Welcome to My <span style="color: var(--accent);">Document Center</span>
+                Welcome to My <span class="text-accent">Document Center</span>
             </h1>
             <p class="doc-hero-copy">
                 Thank you for your interest in my professional profile. Here you can securely access and download my curriculum vitae and other important documents.
             </p>
-            <div style="width: 80px; height: 4px; background: var(--accent); margin: 0 auto; border-radius: 2px;"></div>
         </div>
 
         <!-- INTRO SECTION -->
@@ -62,50 +58,47 @@
             <div class="doc-info-header">
                 <img src="../media/bg-removed.png" alt="David KWIZERA" class="doc-avatar">
                 <div>
-                    <h2 style="color: var(--white); font-size: 1.8rem; font-weight: 700; margin: 0;">About These Documents</h2>
-                    <p style="color: var(--accent); font-size: 1rem; margin: 5px 0 0 0;">Professional & Up-to-Date</p>
+                    <h2 class="doc-title-main">About These Documents</h2>
+                    <p class="doc-status-tag">Professional & Up-to-Date</p>
                 </div>
             </div>
             
-            <p style="color: var(--white); font-size: 1.1rem; line-height: 1.7; margin-bottom: 20px;">
+            <p class="doc-description">
                 My curriculum vitae contains comprehensive information about my educational background, professional experience, technical skills, and notable achievements. All documents are regularly updated and formatted for professional review.
             </p>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-top: 25px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fas fa-shield-alt" style="color: var(--accent); font-size: 1.2rem;"></i>
-                    <span style="color: var(--white); font-weight: 600;">Secure Download</span>
+            <div class="doc-feature-grid">
+                <div class="doc-feature-item">
+                    <i class="fas fa-shield-alt text-accent"></i>
+                    <span class="font-bold">Secure Download</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fas fa-clock" style="color: var(--accent); font-size: 1.2rem;"></i>
-                    <span style="color: var(--white); font-weight: 600;">Always Current</span>
+                <div class="doc-feature-item">
+                    <i class="fas fa-clock text-accent"></i>
+                    <span class="font-bold">Always Current</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fas fa-file-pdf" style="color: var(--accent); font-size: 1.2rem;"></i>
-                    <span style="color: var(--white); font-weight: 600;">PDF Format</span>
+                <div class="doc-feature-item">
+                    <i class="fas fa-file-pdf text-accent"></i>
+                    <span class="font-bold">PDF Format</span>
                 </div>
             </div>
         </div>
 
         <!-- DOWNLOAD SECTION -->
-        <div class="doc-card-download">
-            <div style="position: absolute; top: -100px; right: -100px; width: 200px; height: 200px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; z-index: 1;"></div>
-            <div style="position: absolute; bottom: -80px; left: -80px; width: 160px; height: 160px; background: rgba(59, 130, 246, 0.05); border-radius: 50%; z-index: 1;"></div>
-            
-            <div style="position: relative; z-index: 2;">
-                <div style="margin-bottom: 30px;">
+        <div class="doc-card-download has-decor">
+            <div class="relative z-2">
+                <div class="mb-lg">
                     <div class="doc-download-icon-circle">
                         <i class="fas fa-download"></i>
                     </div>
-                    <h2 style="color: var(--white); font-size: 2.2rem; font-weight: 800; margin-bottom: 15px;">Download My CV</h2>
-                    <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 30px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                    <h2 class="doc-download-title">Download My CV</h2>
+                    <p style="color: var(--muted); margin-bottom: 30px; max-width: 500px; margin-left: auto; margin-right: auto;">
                         Securely download my professional curriculum vitae by clicking the button below.
                     </p>
                 </div>
                 
                 <!-- MAIN DOWNLOAD BUTTON -->
-                <button class="doc-download-button" onclick="downloadCV()">
-                    <i class="fas fa-file-pdf" style="margin-right: 10px;"></i>
+                <button class="doc-download-button" id="btn-download-cv">
+                    <i class="fas fa-file-pdf mr-sm"></i>
                     Download CV (PDF)
                 </button>
                 
@@ -131,17 +124,15 @@
         </div>
 
         <!-- CERTIFICATES SECTION -->
-        <div style="margin-top: 50px; text-align: left;">
-            <div style="text-align: center; margin-bottom: 35px;">
-                <h3 style="color: var(--white); font-size: 2rem; font-weight: 800; margin-bottom: 10px;">
-                    <i class="fas fa-certificate" style="color: var(--accent); margin-right: 15px;"></i>
+        <div class="mt-lg text-left">
+            <div class="text-center mb-lg">
+                <h3 class="doc-title-main">
+                    <i class="fas fa-certificate text-accent mr-sm"></i>
                     Certificates & Documents
                 </h3>
-                <p style="color: var(--muted); font-size: 1rem; max-width: 500px; margin: 0 auto;">Professional certifications, achievements, and related documents that showcase my expertise and qualifications.</p>
-                <div style="width: 80px; height: 3px; background: var(--accent); margin: 15px auto 0; border-radius: 2px;"></div>
             </div>
             
-            <div class="doc-grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
+            <div class="grid-responsive">
                 <!-- AIMS Certificate -->
                 <div style="background: rgba(22, 22, 22, 0.3); border: 2px solid var(--accent-dim); border-radius: 18px; padding: 30px; transition: all 0.4s ease; position: relative; overflow: hidden; backdrop-filter: blur(10px);">
                     <!-- Decorative elements -->

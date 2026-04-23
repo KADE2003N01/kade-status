@@ -1,5 +1,19 @@
-// ── Hamburger Menu Toggle ──
 document.addEventListener('DOMContentLoaded', function() {
+    // 1. Active Navigation Link Highlighter
+    const currentURL = window.location.href;
+    const navLinksList = document.querySelectorAll('.nav-links a');
+    
+    navLinksList.forEach(link => {
+        const linkHref = link.getAttribute('href');
+        // Handle cases like '../index.html' or 'about.html'
+        if (currentURL.includes(linkHref.replace('../', ''))) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+
+    // 2. Hamburger Menu Logic
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.querySelector('.nav-links');
     
@@ -7,7 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburger.addEventListener('click', function(e) {
             e.stopPropagation();
             navLinks.classList.toggle('open');
-            hamburger.classList.toggle('open');
+            const isOpen = navLinks.classList.contains('open');
+            hamburger.textContent = isOpen ? '✕' : '☰';
+            hamburger.classList.toggle('open', isOpen);
         });
         
         // Close menu when clicking on a link
@@ -15,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
             link.addEventListener('click', function() {
                 navLinks.classList.remove('open');
                 hamburger.classList.remove('open');
+                hamburger.textContent = '☰';
             });
         });
         
@@ -23,13 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
                 navLinks.classList.remove('open');
                 hamburger.classList.remove('open');
+                hamburger.textContent = '☰';
             }
         });
     }
-});
 
-// ── Theme Toggle ──
-document.addEventListener('DOMContentLoaded', function() {
+    // 3. Theme Toggle Logic
     const themeToggle = document.getElementById('theme-toggle');
     const htmlElement = document.documentElement;
     
