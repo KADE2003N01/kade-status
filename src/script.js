@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             link.classList.remove('active');
         }
     });
-
+ 
     // 2. Hamburger Menu Logic
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.querySelector('.nav-links');
@@ -77,20 +77,17 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
         });
     }
+
 });
 
-// ── Download CV ──
-function downloadCV() {
-    // Create a link element to trigger download
+// ── Generic Download Handler ──
+function downloadFile(path, filename) {
     const link = document.createElement('a');
-    link.href = '../media/KWIZERA David CV.pdf'; // Path to CV file
-    link.download = 'KWIZERA-David-CV.pdf'; // File name for download
+    link.href = path;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
-    // Log for tracking (optional)
-    console.log('CV download initiated:', new Date().toLocaleString());
 }
 
 // ── Toggle Certificate/Document View ──
@@ -100,15 +97,51 @@ function toggleCertificateView(documentId) {
     
     if (certificateElement && toggleButton) {
         const isCurrentlyVisible = certificateElement.style.display !== 'none';
+        const iframe = certificateElement.querySelector('iframe');
         
         if (isCurrentlyVisible) {
             // Hide the certificate
             certificateElement.style.display = 'none';
+            toggleButton.setAttribute('aria-expanded', 'false');
             toggleButton.innerHTML = '<i class="fas fa-eye" style="margin-right: 5px;"></i>View';
+            // Optional: Clear iframe src when hiding to save resources
+            if (documentId === 'cv') {
+                if (iframe) {
+                    iframe.src = ''; // Clear src to stop loading and save resources
+                    const loader = certificateElement.querySelector('.pdf-loader');
+                    if (loader) loader.style.display = 'none'; // Hide loader
+                }
+            }
         } else {
             // Show the certificate
             certificateElement.style.display = 'block';
+            toggleButton.setAttribute('aria-expanded', 'true');
             toggleButton.innerHTML = '<i class="fas fa-eye-slash" style="margin-right: 5px;"></i>Hide';
+            
+            if (documentId === 'cv' && iframe) {
+                const loader = certificateElement.querySelector('.pdf-loader');
+                const fallback = certificateElement.querySelector('.pdf-fallback');
+                
+                // Reset state
+                if (loader) loader.style.display = 'flex'; // Show loader
+                if (fallback) fallback.style.display = 'none';
+                
+                // Small delay to ensure the DOM has rendered the container before loading the PDF
+                // This helps mobile browsers recognize it's an inline view request
+                setTimeout(() => {
+                    // Append #view=FitH to help mobile viewers scale the document
+                    iframe.src = '../media/KWIZERA%20David%20CV.pdf#view=FitH&toolbar=0';
+                }, 100);
+
+                iframe.onload = () => {
+                    if (loader) loader.style.display = 'none'; // Hide loader
+                };
+
+                iframe.onerror = () => {
+                    if (loader) loader.style.display = 'none'; // Hide loader
+                    if (fallback) fallback.style.display = 'flex'; // Show fallback
+                };
+            }
         }
     }
 }
