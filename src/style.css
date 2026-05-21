@@ -66,6 +66,25 @@ body {
     cursor: default; /* Removes the "writing symbol" (I-beam) from the whole page */
 }
 
+/* Accessibility: Clear focus indicators for keyboard users */
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+}
+
+/* Screen Reader Only Utility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
 /* ── NAV ── */
 nav {
     position: fixed;
@@ -920,6 +939,7 @@ footer::before {
 
 /* Tablet (768px - 1024px) */
 @media (max-width: 768px) {
+    body { font-size: 14px; }
     nav { padding: 12px 20px; z-index: 1000; }
     .nav-logo { display: flex !important; margin-right: auto; }
     .nav-links { 
@@ -941,4 +961,22 @@ footer::before {
     .nav-links a { font-size: 1.2rem; border: none; }
     .hamburger { display: block !important; }
     .theme-toggle { margin-right: 50px; }
+
+    /* Hero Section Fixes for Mobile */
+    #home {
+        padding: 100px 24px 40px;
+        min-height: 80vh; /* Ensure more space for content */
+        text-align: center;
+    }
+    .home-wrapper {
+        align-items: center;
+        gap: 20px;
+    }
+    .glitch { font-size: 2rem; }
+    .subtitle { font-size: 0.95rem; }
+    .intro { font-size: 0.9rem; margin: 0 auto 20px; }
+    .btn-group { justify-content: center; }
+
+    .doc-hero-title { font-size: 1.8rem; }
+    .section-title { font-size: 1.4rem; }
 }

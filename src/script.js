@@ -27,6 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             navLinks.classList.toggle('open');
             const isOpen = navLinks.classList.contains('open');
+            
+            // Accessibility: Update ARIA states
+            hamburger.setAttribute('aria-expanded', isOpen);
+            hamburger.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
             hamburger.textContent = isOpen ? '✕' : '☰';
             hamburger.classList.toggle('open', isOpen);
         });
@@ -36,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
             link.addEventListener('click', function() {
                 navLinks.classList.remove('open');
                 hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+                hamburger.setAttribute('aria-label', 'Open navigation menu');
                 hamburger.textContent = '☰';
             });
         });
@@ -45,6 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
                 navLinks.classList.remove('open');
                 hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+                hamburger.setAttribute('aria-label', 'Open navigation menu');
                 hamburger.textContent = '☰';
             }
         });
